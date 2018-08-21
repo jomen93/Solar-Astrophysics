@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 
 
-Nx = 128
-Ny = 128
+Nx = 256
+Ny = 256
 Nz = 0
 
 xmin = 0.; xmax = 1.0
@@ -28,6 +28,7 @@ fluid.nu = 0.
 fluid.eta = 0.
 fluid.dt = 1e-3
 fluid.nt = int(1.05/fluid.dt)
+switch = False
 
 x = np.linspace(xmin,xmax,Nx)
 y = np.linspace(ymin,ymax,Ny)
@@ -39,10 +40,10 @@ u = v = p = src = Bx = By = A = np.zeros((Nx,Ny))
 
 # Intital conditions
 
-u = np.zeros((np.shape(x)))#-np.sin(np.pi*x)*np.cos(np.pi*y)
-v = np.cos(np.pi*x)*np.sin(np.pi*y)
-Bo = 1./np.sqrt(4.*np.pi)
-A = Bo*np.cos(4.*np.pi*x)/(4.*np.pi) + Bo*np.cos(2.*np.pi*y)/(2.*np.pi)
+u = np.sin((y-ymax/2.))  #-np.exp(-((x-xmax/2.)/1.)**2)
+v = -np.sin((x-xmax/2.)) #np.exp(-((y-xmax/2.)/1.)**2)
+Bo = 1.#/np.sqrt(4.*np.pi)
+A =  Bo*np.cos(4*np.pi*x)/(4*np.pi) + Bo*np.cos(4*np.pi*y)/(4*np.pi)
 
 
 #Boundary conditions 
@@ -76,14 +77,13 @@ By[-1, :] = By[1,:]
 By[:,0] = By[:,-2]
 By[:,-1] = By[:,1]
 
-M = np.hypot(u,v)
-#plt.streamplot(x,y,u,v,color = "k",linewidth=0.8,density=0.4, arrowstyle='->', arrowsize=1.5)
-plt.quiver(x, y, u,v, M , cmap=plt.cm.jet, width=0.01)#,scale=10)
-#plt.title("presion")
-#plt.imshow(u)
+M = np.hypot(Bx,By)
+plt.quiver(x, y, Bx,By, M , cmap=plt.cm.jet, width=0.01)
+plt.title("Campo Magnetico inicial")
 plt.colorbar()
-#plt.xlim(0,xmax)
-#plt.ylim(0,xmax)
+plt.xlabel("$u_{x}$")
+plt.ylabel("$u_{y}$")
+plt.savefig("Campo_Mag_Inicial")
 plt.show()
 
 
@@ -129,27 +129,30 @@ for i in xrange(fluid.start,fluid.nt+1):
 	By[0, :] = By[-2, : ]; By[-1, :] = By[1, : ]
 	By[:,0] = By[: , -2]; By[ : , -1] = By [:,1]
 
-	if (i % 10 == 2):
+	if (i % 10 == 5 ) and switch == True:
 		M = np.hypot(u,v)
 		#plt.streamplot(x,y,u,v,color = "k",linewidth=0.8,density=0.4, arrowstyle='->', arrowsize=1.5)
-		plt.quiver(x, y, u,v, M , cmap=plt.cm.autumn, width=0.01)#,scale=10)
+		plt.quiver(x, y, u,v, M , cmap=plt.cm.jet, width=0.01)#,scale=10)
 		plt.title("Campo de velocidades ")
-		plt.savefig("campoFinal"+str(i))
+		#plt.savefig("campoFinal"+str(i))
+		plt.xlabel("$u_{x}$")
+		plt.ylabel("$u_{y}$")
+		plt.colorbar()
+		plt.show()
 
 	print i
 
 
 
 
-M = np.hypot(u,v)
+M = np.hypot(Bx,By)
 #plt.streamplot(x,y,u,v,color = "k",linewidth=0.8,density=0.4, arrowstyle='->', arrowsize=1.5)
-plt.quiver(x, y, u,v, M , cmap=plt.cm.jet, width=0.01)#,scale=10)
-plt.title("Campo de velocidades")
-plt.savefig("campoFinal")
-#plt.imshow(u)
+plt.quiver(x, y, Bx,By, M , cmap=plt.cm.jet, width=0.01)#,scale=10)
+plt.title("Campo Magnetico final")
+plt.savefig("Campo_Mag_Final")
 plt.colorbar()
-#plt.xlim(0,xmax)
-#plt.ylim(0,xmax)
+plt.xlabel("$u_{x}$")
+plt.ylabel("$u_{y}$")
 plt.show()
 
 
