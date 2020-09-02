@@ -1,4 +1,4 @@
-import numpy as np 
+import numpy as np
 from fluid_solver import fluid_solver_2D
 from fluid_diff import Fluid
 import matplotlib.pyplot as plt 
@@ -87,7 +87,7 @@ plt.savefig("Campo_Mag_Inicial")
 plt.show()
 
 
-for i in xrange(fluid.start,fluid.nt+1):
+for i in range(fluid.start,fluid.nt+1):
 
 	u_old = u.copy()
 	u[1:-1,1:-1] = (fluid.nonlinear_advect_implicit_periodic_2d(u,u,v,xx,yy)- fluid.nonlinear_advect_implicit_periodic_2d(Bx,Bx,By,xx,yy)+ Bx[1:-1,1:-1] - fluid.apply_pressure_2dX(Bx**2+By**2,0.5))
@@ -140,7 +140,7 @@ for i in xrange(fluid.start,fluid.nt+1):
 		plt.colorbar()
 		plt.show()
 
-	print i
+	print(i)
 
 
 
